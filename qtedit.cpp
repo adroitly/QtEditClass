@@ -315,16 +315,16 @@ void QtEdit::saveAllData()
 void QtEdit::importSpine()
 {
 	QString file_name;
-	QString filter = openFile_Path;;
-	if (openFile_Path.lastIndexOf(".") != -1)
+	QString filter = openSpineFile_Path;;
+	if (openSpineFile_Path.lastIndexOf(".") != -1)
 	{
 		filter = "all files (*.atlas);;all files (*)";
 	}file_name = QFileDialog::getOpenFileName(this,
-		codec->toUnicode("导入atlas文件"), openFile_Path, filter);
+		codec->toUnicode("导入atlas文件"), openSpineFile_Path, filter);
 	if (!file_name.isNull())
 	{
 		//fileName是文件名
-		//MySQLite(true, file_name, "open_path");
+		MySQLite(true, file_name, "open_spine_path");
 		_DrawRectLayer = DrawRectLayer::getInstence();
 		//log("%d", file_name.lastIndexOf("/"));
 		//QStringList strlist = file_name.split("Resources/");
@@ -493,11 +493,11 @@ void QtEdit::MySQLite(bool is_Update /* = false */, QString data /* = 0  */, QSt
 		DBUtil *db = DBUtil::getInstance();
 		db->openDBWithName("QtEditSQLite");
 		//db->deleteTable("DROP TABLE IF EXISTS tb_FilePath;", "tb_FilePath");
-		db->createTable("create table if not exists tb_FilePath(open_path VARCHAR(50) NOT NULL , byte_path VARCHAR(50) NOT NULL , json_path VARCHAR(50) NOT NULL)", "tb_FilePath");
-		std::vector<std::map<std::string, std::string> > SQL_data = db->searchData("select open_path,byte_path,json_path from tb_FilePath");
+		db->createTable("create table if not exists tb_FilePath(open_c3b_path VARCHAR(50) NOT NULL ,open_spine_path VARCHAR(50) NOT NULL, byte_path VARCHAR(50) NOT NULL , json_path VARCHAR(50) NOT NULL)", "tb_FilePath");
+		std::vector<std::map<std::string, std::string> > SQL_data = db->searchData("select * from tb_FilePath");
 		if (SQL_data.size() == 0)
 		{
-			db->insertData("insert into tb_FilePath values('./' , './' , './')");
+			db->insertData("insert into tb_FilePath values('./' , './', './' , './')");
 		}
 		for (i = 0; i < SQL_data.size(); i++)
 		{
@@ -514,9 +514,13 @@ void QtEdit::MySQLite(bool is_Update /* = false */, QString data /* = 0  */, QSt
 				{
 					export_Json_Path = iter->second.c_str();
 				}
+				else if (iter->first == "open_spine_path")
+				{
+					openSpineFile_Path = iter->second.c_str();
+				}
 				else
 				{
-					openFile_Path = iter->second.c_str();
+					openC3bFile_Path = iter->second.c_str();
 				}
 				//openFile_Path = iter->second.c_str();
 			}
@@ -530,13 +534,17 @@ void QtEdit::MySQLite(bool is_Update /* = false */, QString data /* = 0  */, QSt
 		std::sprintf(myshowstr, "update tb_FilePath set %s = '%s'", col_name.toStdString().c_str() , data.toStdString().c_str());
 		db->updateData(myshowstr);
 		db->closeDB();
-		if (col_name.toStdString() == "open_path")
+		if (col_name.toStdString() == "open_c3b_path")
 		{
-			openFile_Path = data;
+			openC3bFile_Path = data;
 		}
 		else if (col_name.toStdString() == "json_path")
 		{
 			export_Json_Path = data;
+		}
+		else if (col_name.toStdString() == "open_spine_path")
+		{
+			openSpineFile_Path = data;
 		}
 		else
 		{
@@ -611,10 +619,10 @@ void QtEdit::openData()
 void QtEdit::import()
 {
 	QString file_name;
-	QString filter = openFile_Path;;
-	if (openFile_Path.lastIndexOf(".") != -1)
+	QString filter = openC3bFile_Path;;
+	if (openC3bFile_Path.lastIndexOf(".") != -1)
 	{
-		if (openFile_Path.mid(openFile_Path.lastIndexOf(".") + 1) != "c3t")
+		if (openC3bFile_Path.mid(openC3bFile_Path.lastIndexOf(".") + 1) != "c3t")
 		{
 			filter = tr("c3b Files (*.c3b);; c3t Files (*.c3t);; all Files (*)");
 		}
@@ -624,11 +632,11 @@ void QtEdit::import()
 		}
 	}
 	file_name = QFileDialog::getOpenFileName(this,
-		codec->toUnicode("导入文件"), openFile_Path, filter);
+		codec->toUnicode("导入文件"), openC3bFile_Path, filter);
 	if (!file_name.isNull())
 	{
 		//fileName是文件名
-		MySQLite(true , file_name , "open_path");
+		MySQLite(true , file_name , "open_c3b_path");
 		_DrawRectLayer = DrawRectLayer::getInstence();
 		//log("%d", file_name.lastIndexOf("/"));
 		//QStringList strlist = file_name.split("Resources/");

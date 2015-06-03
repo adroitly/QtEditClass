@@ -79,9 +79,10 @@ public:
 	QRegExpValidator * validtor;
 	bool Is_ChangeInputToBox;//
 	QStringList animation_list;
-	QString openFile_Path = "./";
+	QString openC3bFile_Path = "./";
 	QString export_Byte_Path = "./";
 	QString export_Json_Path = "./";
+	QString openSpineFile_Path = "./";
 private slots:
 	void yestButtonClick();
 	void import();
