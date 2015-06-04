@@ -67,7 +67,7 @@ void DrawRectLayer::DrawInitPosi()
 	point1[2] = Vec2(505, 105);
 	point1[3] = Vec2(495, 105);
 	PosiDraw->drawPolygon(point1, 4, Color4F(1, 0, 0, 1), 1, Color4F(0, 1, 0, 1));
-	this->addChild(PosiDraw);
+	this->addChild(PosiDraw , 100);
 }
 bool DrawRectLayer::onTouchBegan(Touch *touch, Event *unused_event)
 {
