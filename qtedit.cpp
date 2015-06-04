@@ -87,6 +87,7 @@ void QtEdit::AddCao()
 	QObject::connect(ui.ScallX, SIGNAL(textEdited(QString)), this, SLOT(ChangeInput()));
 	QObject::connect(ui.ScallY, SIGNAL(textEdited(QString)), this, SLOT(ChangeInput()));
 	QObject::connect(ui.ScallY, SIGNAL(textEdited(QString)), this, SLOT(ChangeInput()));
+	//QObject::connect(ui.Width, SIGNAL(wheelEvent(QWheelEvent *)), this, SLOT(wheelEvent(QWheelEvent*)));
 	QObject::connect(ui.Re_Width, SIGNAL(textEdited(QString)), this, SLOT(ReChangeInput()));
 	QObject::connect(ui.Re_Height, SIGNAL(textEdited(QString)), this, SLOT(ReChangeInput()));
 	QObject::connect(ui.PauseButton, SIGNAL(clicked()), this, SLOT(pausebuttonclick()));
@@ -223,6 +224,84 @@ void QtEdit::Mybox_Combox(QString str)
 	{
 		setMyBox(4);
 	}
+}
+void QtEdit::wheelEvent(QWheelEvent *e)
+{
+	//int numDegrees = e->delta() / 8;//滚动的角度，*8就是鼠标滚动的距离
+	//int numSteps = numDegrees / 15;//滚动的步数，*15就是鼠标滚动的角度
+	/*bool has = ui.Width->hasFocus();*/
+	//if (!is_import)
+	//{
+	//	return;
+	//}
+	int num = e->delta();
+	int down_up = 1;
+	if (num < 0)//向下滚动
+	{
+		down_up = -1;
+	}
+	else
+	{
+		down_up = 1;
+	}
+	if (ui.Width->hasFocus())
+	{
+		ui.Width->setText(QString::number(ui.Width->text().toFloat() + down_up));
+		ui.Re_Width->setText(QString::number(ui.Re_Width->text().toFloat() + down_up));
+	}
+	else if (ui.Height->hasFocus())
+	{
+		ui.Height->setText(QString::number(ui.Height->text().toFloat() + down_up));
+		ui.Re_Height->setText(QString::number(ui.Re_Height->text().toFloat() + down_up));
+	}
+	else if (ui.Re_Width->hasFocus())
+	{
+		ui.Width->setText(QString::number(ui.Width->text().toFloat() + down_up));
+		ui.Re_Width->setText(QString::number(ui.Re_Width->text().toFloat() + down_up));
+	}
+	else if (ui.Re_Height->hasFocus())
+	{
+		ui.Height->setText(QString::number(ui.Height->text().toFloat() + down_up));
+		ui.Re_Height->setText(QString::number(ui.Re_Height->text().toFloat() + down_up));
+	}
+	else if (ui.Rotate->hasFocus())
+	{
+		ui.Rotate->setText(QString::number(ui.Rotate->text().toFloat() + down_up));
+	}
+	else if (ui.ScallX->hasFocus())
+	{
+		ui.ScallX->setText(QString::number(ui.ScallX->text().toFloat() + (down_up * 0.1)));
+	}
+	else if (ui.ScallY->hasFocus())
+	{
+		ui.ScallY->setText(QString::number(ui.ScallY->text().toFloat() + (down_up * 0.1)));
+		//ReChangeInput();
+	}
+	else if (ui.St_Width->text() != "")
+	{
+		if (ui.St_Width->hasFocus())
+		{
+			ui.St_Width->setText(QString::number(ui.St_Width->text().toFloat() + down_up));
+		}
+		else if (ui.St_Height->hasFocus())
+		{
+			ui.St_Height->setText(QString::number(ui.St_Height->text().toFloat() + down_up));
+		}
+		else if (ui.St_Height->hasFocus())
+		{
+			ui.St_Height->setText(QString::number(ui.St_Height->text().toFloat() + down_up));
+		}
+		else if (ui.En_Height->hasFocus())
+		{
+			ui.En_Height->setText(QString::number(ui.En_Height->text().toFloat() + down_up));
+		}
+		else if (ui.Rotate->hasFocus())
+		{
+			ui.Rotate->setText(QString::number(ui.Rotate->text().toFloat() + down_up));
+		}
+		BoxChangeInput("");
+	}
+	ChangeInput();
 }
 void QtEdit::setMyBox(int a)
 {
@@ -1094,6 +1173,7 @@ void QtEdit::showmessageChange()
 }
 void QtEdit::ChangeInput()
 {
+	QString combox_text = ui.MyBox_comboBox->currentText();
 	ui.Re_Height->setText(QString("%1").arg(ui.Height->text().toFloat() - _IN_Height));
 	ui.Re_Width->setText(QString("%1").arg(ui.Width->text().toFloat() - _IN_Width));
 	_DrawRectLayer = DrawRectLayer::getInstence();
@@ -1174,6 +1254,7 @@ void QtEdit::ChangeInput()
 	{
 		//QMessageBox::about(this, tr("information"), tr("NULL Import"));
 	}
+	ui.MyBox_comboBox->setCurrentText(combox_text);
 }
 
 void QtEdit::pausebuttonclick()

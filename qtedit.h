@@ -106,6 +106,7 @@ private slots:
 	void Mybox_Combox(QString str);
 	void BoxChangeInput(QString str);
 	void export_byteData();
+	void wheelEvent(QWheelEvent *e);//Êó±ê¹ö¶¯
 protected:
 	void closeEvent(QCloseEvent *);
 	void setParent(HWND);
