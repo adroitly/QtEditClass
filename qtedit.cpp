@@ -57,7 +57,7 @@ QtEdit::QtEdit(QWidget *parent)
 	ui.AnimationtreeWidget->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 	ui.AnimationtreeWidget->header()->setStretchLastSection(true);
 	ui.dockWidgetContents_5->setUpdatesEnabled(TRUE);
-	ui.PencentageSlider->setGeometry(0, 0, this->width(), 40);
+	//ui.PencentageSlider->setGeometry(0, 0, this->width(), 40);
 	codec = QTextCodec::codecForName("GB18030");
 	AddCao();
 	MySQLite();
@@ -423,8 +423,9 @@ void QtEdit::importSpine()
 		if (is_import)
 		{
 			animation_list.clear();
-			_DrawRectLayer->removeAllChildrenWithCleanup(true);
+			_DrawRectLayer->removeAllChildrenWithCleanup(false);
 			_DrawRectLayer->spritePoints.clear();
+			_DrawRectLayer->DrawInitPosi();
 		}
 
 		_DrawRectLayer->updatemySpine(file_name.toStdString(), (fi.path() + "/" + fi.fileName().split(".").at(0)  +".json").toStdString());
@@ -486,12 +487,13 @@ void QtEdit::export_byteData()
 	//ShowMsg("Export");
 	if (!is_import)
 	{
-		QMessageBox::StandardButton rb = QMessageBox::question(NULL, "information", codec->toUnicode("当前没有导入资源，是否先导入资源?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-		if (rb == QMessageBox::Yes)
-		{
-			import();
+		QMessageBox::about(this, tr("information"), codec->toUnicode("当前没有导入资源,请先导入资源"));
+		//QMessageBox::StandardButton rb = QMessageBox::question(NULL, "information", codec->toUnicode("当前没有导入资源，是否先导入资源?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+		//if (rb == QMessageBox::Yes)
+		//{
+		//	import();
 
-		}
+		//}
 
 	}
 	else
@@ -639,13 +641,13 @@ void QtEdit::exportData()
 	//ShowMsg("Export");
 	if (!is_import)
 	{
-		QMessageBox::StandardButton rb = QMessageBox::question(NULL, "information", codec->toUnicode("当前没有导入资源，是否先导入资源?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-		if (rb == QMessageBox::Yes)
-		{
-			import();
-			
-		}
-		
+		//QMessageBox::StandardButton rb = QMessageBox::question(NULL, "information", codec->toUnicode("当前没有导入资源，是否先导入资源?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+		//if (rb == QMessageBox::Yes)
+		//{
+		//	import();
+		//	
+		//}
+		QMessageBox::about(this, tr("information"), codec->toUnicode("当前没有导入资源，请先导入资源"));
 	}
 	else
 	{
@@ -680,7 +682,8 @@ void QtEdit::ActionHelp()
 	//QMessageBox::aboutQt(NULL, "About Qt");
 	std::string showabout = "";
 	showabout = "cocos Action Edit是FBX用cocos2dx自带的转换器转换到c3b或c3t中，支持一个model多个Animation的动作编辑器\n";
-	showabout += "贴图的名字必须和model的一样，并且贴图文件是.png格式，动作的c3b和c3t必须放在animations文件夹下，";
+	showabout += "贴图的名字必须和model的一样，并且贴图文件是.png格式，动作的c3b和c3t必须放在animations文件夹下\n";
+	showabout += "本编辑器还支持Spine的操作，Spine的文件要求是json文件和atlas文件名必须一致，否则出错,\n";
 	showabout += "这个编辑器支持保存操作、导出二进制文件和导出json格式操作。二进制文件格式为自己的格式";
 	showabout += "\n本编辑器存在很多问题。";
 	showabout += "\nCopyRight(©) killer & TimeNew Studios";
@@ -738,8 +741,9 @@ void QtEdit::import()
 		if (is_import)
 		{
 			animation_list.clear();
-			_DrawRectLayer->removeAllChildrenWithCleanup(true);
+			_DrawRectLayer->removeAllChildrenWithCleanup(false);
 			_DrawRectLayer->spritePoints.clear();
+			_DrawRectLayer->DrawInitPosi();
 		}
 		
 		AddAnimationList(file_name);
@@ -747,7 +751,7 @@ void QtEdit::import()
 		if (animation_list.size() != 0)
 		{
 			float _end_dt = -1;
-			if (is_import)
+			if (is_import&& _DrawRectLayer->animation)
 			{
 				_end_dt = _DrawRectLayer->animation->getDuration() * oneFPX;
 			}
@@ -1091,23 +1095,28 @@ void QtEdit::ChangeSliderButton()
 void QtEdit::AddSliderButton()
 {
 	int  i;
+	int size = 400;
+	int wi;
 	_lastButton = NULL;
 	buttonWidget = new QWidget(ui.PerWiget);
 	buttonWidget->setPalette(QPalette(Qt::gray));
 	buttonWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 	scrollArea = new QScrollArea(ui.PerWiget);
+	scrollArea->setAlignment(Qt::AlignCenter);
 	//scrollArea->setBackgroundRole(QPalette::Dark);
 	scrollArea->setWidget(buttonWidget);
-	scrollArea->setGeometry(QRect(0, 60, 1780, 170));
-	QScrollBar *scallbar = scrollArea->horizontalScrollBar();
-	buttonWidget->setGeometry(QRect(0, 40, 8000, 150));
+	scrollArea->setGeometry(QRect(0, 20, 1780, 210));
+	scallbar = scrollArea->horizontalScrollBar();
+	buttonWidget->setGeometry(QRect(0, 0, 8000, 190));
+	ui.PencentageSlider->setParent(buttonWidget);
+	ui.PencentageSlider->setGeometry(QRect(0, 0, size * 20, 50));
+	ui.PencentageSlider->setMinimum(0);
+	ui.PencentageSlider->setMaximum(size);
 	sliderFameshow.clear();
 	sliderButton.clear();
 	//float duratime = _DrawRectLayer->animation->getDuration();
 	QFont font;
 	font.setPointSize(9);
-	int size = 400;
-	int wi;
 	for (i = 0; i < size; i ++ )
 	{
 		std::sprintf(myshowstr, "%d", i);
@@ -1118,29 +1127,29 @@ void QtEdit::AddSliderButton()
 		oneButton->Singl_ID = i;
 		oneButton->Is_Click = false;
 		wi = i * 20;
-		oneButton->setGeometry(QRect(wi, 20, 20, 105));
+		oneButton->setGeometry(QRect(wi, 60, 20, 105));
 		oneButton->setStyleSheet("background: transparent;border:0px");
-		oneButton->_EffFraButton->setGeometry(QRect(wi, 125, 20, 5));
+		oneButton->_EffFraButton->setGeometry(QRect(wi, 165, 20, 5));
 		//oneButton->_AttFraButton->setAutoFillBackground(true);
 		oneButton->_EffFraButton->setStyleSheet("background: transparent;border:0px");
-		oneButton->_AttFraButton->setGeometry(QRect(wi, 130, 20, 5));
+		oneButton->_AttFraButton->setGeometry(QRect(wi, 170, 20, 5));
 		//oneButton->_AttFraButton->setAutoFillBackground(true);
 		oneButton->_AttFraButton->setStyleSheet("background: transparent;border:0px");
-		oneButton->_ActFraButton->setGeometry(QRect(wi, 135, 20, 5));
+		oneButton->_ActFraButton->setGeometry(QRect(wi, 175, 20, 5));
 		//oneButton->_AttFraButton->setAutoFillBackground(true);
 		oneButton->_ActFraButton->setStyleSheet("background: transparent;border:0px");
-		oneButton->_InjFraButton->setGeometry(QRect(wi, 140, 20, 5));
+		oneButton->_InjFraButton->setGeometry(QRect(wi, 180, 20, 5));
 		//oneButton->_AttFraButton->setAutoFillBackground(true);
 		oneButton->_InjFraButton->setStyleSheet("background: transparent;border:0px");
-		oneButton->_BodyFraButton->setGeometry(QRect(wi, 145, 20, 5));
+		oneButton->_BodyFraButton->setGeometry(QRect(wi, 185, 20, 5));
 		//oneButton->_BodyFraButton->setAutoFillBackground(true);
 		oneButton->_BodyFraButton->setStyleSheet("background: transparent;border:0px");
-		line->setGeometry(QRect(wi, 20, 3, 105));
+		line->setGeometry(QRect(wi, 60, 3, 105));
 		line->setFrameShape(QFrame::VLine);
 		line->setFrameShadow(QFrame::Sunken);
 		QObject::connect(oneButton, SIGNAL(clicked()), this, SLOT(SlderButtonClick()));
 		showline = new QLabel(buttonWidget);
-		showline->setGeometry(QRect(wi, 7, 20, 15));
+		showline->setGeometry(QRect(wi, 47, 20, 15));
 		showline->setFont(font);
 		showline->setText(myshowstr);
 		showline->setAlignment(Qt::AlignCenter);
@@ -1349,7 +1358,7 @@ void QtEdit::AnimationSlderClick(int per)
 
 void QtEdit::setPerWiget(int max)
 {
-	ui.PencentageSlider->setGeometry(QRect(0, 0, FPX * 20, 40));
+	ui.PencentageSlider->setGeometry(QRect(0, 0, FPX * 20, 50));
 	ui.PencentageSlider->setMaximum(max);
 	ui.PencentageSlider->setMinimum(0);
 	ui.PencentageSlider->setValue(0);

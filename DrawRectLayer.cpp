@@ -35,6 +35,7 @@ bool DrawRectLayer::init()
 	{
 		return false;
 	}
+	DrawInitPosi();
 	Is_Moveto_Add = false;
 	injuredNode = new MyDrawNode();
 	this->addChild(injuredNode->drawnode);
@@ -57,7 +58,17 @@ bool DrawRectLayer::init()
 	return true;
 }
 
-
+void DrawRectLayer::DrawInitPosi()
+{
+	PosiDraw = DrawNode::create();
+	Vec2 point1[4];
+	point1[0] = Vec2(495, 95);
+	point1[1] = Vec2(505, 95);
+	point1[2] = Vec2(505, 105);
+	point1[3] = Vec2(495, 105);
+	PosiDraw->drawPolygon(point1, 4, Color4F(1, 0, 0, 1), 1, Color4F(0, 1, 0, 1));
+	this->addChild(PosiDraw);
+}
 bool DrawRectLayer::onTouchBegan(Touch *touch, Event *unused_event)
 {
 	Point touchpoint = touch->getLocation();

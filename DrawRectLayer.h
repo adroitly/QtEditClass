@@ -13,6 +13,8 @@ class DrawRectLayer :public cocos2d::Layer
 public:
 	DrawRectLayer();
 	~DrawRectLayer();
+	DrawNode * PosiDraw = NULL;
+	void DrawInitPosi();
 	CREATE_FUNC(DrawRectLayer);
 	virtual bool init();
 	static DrawRectLayer * createLayer();

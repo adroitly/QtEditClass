@@ -134,7 +134,7 @@ private:
 	bool				deleteAtt;
 	bool				deleteInj;
 	QString				re_file_path;
-
+	QScrollBar			*scallbar;
 public:
 	HWND m_Parent;
 };
