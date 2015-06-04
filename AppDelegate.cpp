@@ -1,6 +1,7 @@
 #include "AppDelegate.h"
 #include "HelloWorldScene.h"
 #include "CocosQtPort/CCQGLView.h"
+#include "qtedit.h"
 USING_NS_CC;
 
 //AppDelegate::AppDelegate() {

@@ -1,12 +1,5 @@
 #include "Export_Data.h"
-#include "MyConfig.h"
-#include "qtedit.h"
-#include "MySpritePoint.h"
-#include "json/json.h"
-#include "ATLENC.H"
-#include "atlstr.h "
-#include "ByteArray.h"
-#include <fstream>
+
 
 static QtEdit *_QtEdit = NULL;
 static Export_Data *_Export_ByteArrry = NULL;

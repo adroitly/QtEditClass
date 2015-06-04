@@ -8,10 +8,8 @@
 #include "QTableWidget.h"
 #include "qframe.h"
 #include "QScrollArea.h"
-//#include "MyDrawNode.h"
-//#include "MySpritePoint.h"
 #include "MyVector.h" 
-#include "MyConfig.h"
+//#include "MyConfig.h"
 class AppDelegate;
 namespace Ui {
 	class QtEdit;

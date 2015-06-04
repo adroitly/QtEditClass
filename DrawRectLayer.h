@@ -3,11 +3,10 @@
 #define _DRAWRECTLAYER_H_
 #include "MyDrawNode.h"
 #include "MySpritePoint.h"
-#include "MyConfig.h"
 #include "cocos2d.h"
-
-
 USING_NS_CC;
+using namespace std;
+//class SkeletonAnimation;
 
 class DrawRectLayer :public cocos2d::Layer
 {
@@ -29,11 +28,28 @@ public:
 	std::vector <MySpritePoint *> spritePoints;
 	void myupdate();
 	static DrawRectLayer * getInstence();
+
+
+	void setSpritePosition(float with, float height, float sacllx, float scally);
+
 	void updatemydata(std::string filename , std::string texture , std::string file_animation);
+	void updatemySpine(std::string filename , std::string json_name);
+
+
+
+	//Spine²Ù×÷
+	float getMySpineDuration();
+	float _MySpineDuration = -1;
+	void setMySpineAnimation(const char * _name , bool is_re = true);
+	void MySpineUnUpdate();
+	void updateMySpinePercentage(float dt);
+
+
+
 	Sprite3D *sp;
 	//;
 	//SkeletonAnimation * getMySpine();
-	//spine::SkeletonAnimation * MySpine;
+	//SkeletonAnimation * MySpine;
 	//void update(float);
 	//
 	void CtrlZ();
@@ -60,6 +76,8 @@ public:
 	void updataOrInsertFra();
 	void removeDrawNode();
 	void Input_Change_Update_Box(float _rotate);
+
+	vector<string> getSpineAnimation();
 public:
 
 	Animation3D  *animation;
@@ -70,6 +88,7 @@ public:
 	MySpritePoint * _lastSpritePoint;
 	MySpritePoint * _nextSpritePoint;
 	MySpritePoint * _tempSpritePoint = NULL;
+	vector<std::string> SpineAnimationList;
 	void actioncallback(Node* pSender);
 	int				Single_ID;
 	float			mydt;

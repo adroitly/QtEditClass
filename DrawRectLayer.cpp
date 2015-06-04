@@ -1,10 +1,11 @@
 #include "DrawRectLayer.h"
-#include "spine/spine-cocos2dx.h"
+//#include "spine/spine-cocos2dx.h"
+#include "MySpine.h"
 #include "qtedit.h"
-using namespace spine;
 static DrawRectLayer * _DrawRectLayer;
 static QtEdit *_QtEdit;
-static SkeletonAnimation * MySpine;
+static MySpine *_MySpine;
+static spTrackEntry* _entry;
 DrawRectLayer::DrawRectLayer()
 {
 }
@@ -102,6 +103,70 @@ void DrawRectLayer::setDrawPosition()
 		injuredNode->setVertices(Startpoint, Endpoint);
 	}
 }
+
+vector<string> DrawRectLayer::getSpineAnimation()
+{
+	return SpineAnimationList;
+}
+void DrawRectLayer::updatemySpine(std::string filename , std::string json_name)
+{
+	int i;
+	_MySpine = _MySpine->createWithFile(json_name, filename, 0.6f);
+	_MySpine->setPosition(300, 100);
+	this->removeAllChildren();
+	this->addChild(_MySpine);
+	SpineAnimationList.clear();
+	spSkeletonData * self = _MySpine->getSkeleton()->data;
+	for (i = 0; i < self->animationsCount; ++i)
+	{
+		//log("%s", self->animations[i]->name);
+		SpineAnimationList.push_back(self->animations[i]->name);
+	}
+}
+float DrawRectLayer::getMySpineDuration()
+{
+	return _MySpineDuration;
+}
+
+void DrawRectLayer::setMySpineAnimation(const char * _name , bool is_te /* = true */)
+{
+	_MySpine->setToSetupPose();
+	_entry = _MySpine->setAnimation(0, _name, is_te);
+	//_entry = spAnimationState_getCurrent(_MySpine->getState(), 0);
+	_MySpineDuration = _entry->animation->duration;
+	//_MySpine->unscheduleUpdate();
+}
+
+void DrawRectLayer::updateMySpinePercentage(float dt)
+{
+	log("all = %f  now = %f", _MySpineDuration , dt);
+	_MySpine->UpdateMySpinePer(_MySpine, dt);
+	spAnimationState_apply(_MySpine->getState(), _MySpine->getSkeleton());
+	spSkeleton_updateWorldTransform(_MySpine->getSkeleton());
+}
+
+void DrawRectLayer::MySpineUnUpdate()
+{
+	_MySpine->unscheduleUpdate();
+}
+
+void DrawRectLayer::setSpritePosition(float with, float height, float sacllx, float scally)
+{
+	Vec2 posi(with, height);
+	if (1 == _QtEdit->SpiteS_Model)
+	{
+		sp->setPosition(posi);
+		sp->setScaleX(sacllx);
+		sp->setScaleY(scally);
+	}
+	else if (2 == _QtEdit->SpiteS_Model)
+	{
+		_MySpine->setPosition(posi);
+		_MySpine->setScaleX(sacllx);
+		_MySpine->setScaleY(scally);
+	}
+}
+
 
 void DrawRectLayer::updatemydata(std::string filename, std::string texture, std::string file_animation)
 {
@@ -1194,7 +1259,7 @@ void DrawRectLayer::ScheduMyUpdate(float dt)
 	//showMsg(NULL, mydt , a);
 	//_QtEdit->SlderChange(mydt);
 	_QtEdit->AnimationUpdate(mydt);
-	if (mydt > animate->getDuration())
+	if (mydt > _MySpineDuration)
 	{
 		mydt = 0.0;
 		//a = 0;
@@ -1210,8 +1275,17 @@ void DrawRectLayer::ScheduMyUpdate(float dt)
 void DrawRectLayer::StartUpdate()
 {
 	mydt = 0.0;
-	oneDt = animate->getDuration() / (animate->getDuration() * oneFPX);
-	float pe = animate->getDuration() / oneFPX;
+	//float _this_dt = 1.0;
+	if (1 == _QtEdit->SpiteS_Model)
+	{
+		_MySpineDuration = animate->getDuration();
+	}
+	else
+	{
+		_MySpineDuration = _MySpineDuration;
+	}
+	oneDt = _MySpineDuration / (_MySpineDuration * oneFPX);
+	float pe = _MySpineDuration / oneFPX;
 	this->schedule(schedule_selector(DrawRectLayer::ScheduMyUpdate), pe);
 }
 /************************************************************************/

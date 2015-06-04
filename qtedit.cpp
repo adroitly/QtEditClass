@@ -20,7 +20,7 @@
 #include "QJsonDocument"
 #include "QJsonValue"
 #include "QJsonParseError"
-#include<QProcess>
+#include <QProcess>
 #include "QJSONobject"
 #include "json/json.h"
 #include "SQLite/DBUtil.h"
@@ -324,6 +324,7 @@ void QtEdit::importSpine()
 	if (!file_name.isNull())
 	{
 		//fileName是文件名
+		is_import = true;
 		MySQLite(true, file_name, "open_spine_path");
 		_DrawRectLayer = DrawRectLayer::getInstence();
 		//log("%d", file_name.lastIndexOf("/"));
@@ -347,6 +348,8 @@ void QtEdit::importSpine()
 			_DrawRectLayer->spritePoints.clear();
 		}
 
+		_DrawRectLayer->updatemySpine(file_name.toStdString(), (fi.path() + "/" + fi.fileName().split(".").at(0)  +".json").toStdString());
+		SpiteS_Model = 2;
 		AddAnimationList(file_name);
 
 		if (animation_list.size() != 0)
@@ -354,30 +357,30 @@ void QtEdit::importSpine()
 			float _end_dt = -1;
 			if (is_import)
 			{
-				_end_dt = _DrawRectLayer->animation->getDuration() * oneFPX;
+				_end_dt = _DrawRectLayer->_MySpineDuration* oneFPX;
 			}
 			_end_dt = _end_dt > FPX ? _end_dt : FPX;
 			is_import = true;
+			_DrawRectLayer->setMySpineAnimation(animation_list.at(0).toStdString().c_str() , false);
 			//_DrawRectLayer->updatemydata(file_name.toStdString(), file_name.split(".").at(0).toStdString() + ".png", animation_list.at(0).toStdString());
-			//ui.dockWidget->setWindowTitle(animation_list.at(0));
-			//setSlideEndFPX(_DrawRectLayer->animation->getDuration() * oneFPX * 1);
-			//setPerWiget(_DrawRectLayer->animation->getDuration() * oneFPX);
+			ui.dockWidget->setWindowTitle(animation_list.at(0));
+			setSlideEndFPX(_DrawRectLayer->_MySpineDuration * oneFPX * 1);
+			setPerWiget(_DrawRectLayer->_MySpineDuration * oneFPX);
 			////从.data文件中导入数据
-			//Init();
+			Init();
 
-			//btn = sliderButton.at(0);
-			//btn->Is_Click = true;
-			//btn->setPalette(QPalette(Qt::green));
-			//btn->setAutoFillBackground(true);
-			//showline = sliderFameshow.at((btn->Singl_ID));
-			//showline->setVisible(true);
-			//_lastButton = btn;
-
+			btn = sliderButton.at(0);
+			btn->Is_Click = true;
+			btn->setPalette(QPalette(Qt::green));
+			btn->setAutoFillBackground(true);
+			showline = sliderFameshow.at((btn->Singl_ID));
+			showline->setVisible(true);
+			_lastButton = btn;
 
 			////MySpriteChange();
-			//setMyFrame(-1, -1, false, _DrawRectLayer->animation->getDuration() * oneFPX > _end_dt ? _DrawRectLayer->animation->getDuration() * oneFPX : _end_dt);
-			//SlderAnimationAction();
-			//SetMyUI();
+			setMyFrame(-1, -1, false, _DrawRectLayer->_MySpineDuration * oneFPX > _end_dt ? _DrawRectLayer->_MySpineDuration * oneFPX : _end_dt);
+			SlderAnimationAction();
+			SetMyUI();
 			//btn = sliderButton.at(0);
 			//btn->Is_Click = true;
 			//btn->setPalette(QPalette(Qt::green));
@@ -636,6 +639,7 @@ void QtEdit::import()
 	if (!file_name.isNull())
 	{
 		//fileName是文件名
+		SpiteS_Model = 1;
 		MySQLite(true , file_name , "open_c3b_path");
 		_DrawRectLayer = DrawRectLayer::getInstence();
 		//log("%d", file_name.lastIndexOf("/"));
@@ -961,7 +965,15 @@ void  QtEdit::SlderAnimationAction()
 	if (is_import)
 	{
 		_DrawRectLayer->drawPositionEdit(btn->Singl_ID);
-		_DrawRectLayer->animate->updateOnPercentage(0.01 * btn->Singl_ID * 100.0 / (FPX -1));
+		if (1 == SpiteS_Model)
+		{
+			_DrawRectLayer->animate->updateOnPercentage(0.01 * btn->Singl_ID * 100.0 / (FPX - 1));
+		}
+		else
+		{
+			//Spine
+			_DrawRectLayer->updateMySpinePercentage(btn->Singl_ID / oneFPX);
+		}
 		_endButton->setPalette(QPalette(Qt::red));
 	}
 	myBox_Comboxlist.clear();
@@ -1197,7 +1209,7 @@ void QtEdit::MySpriteChange()
 {
 	//由于窗口植入QT中有所变化，所以需要进行一个数值的等宽高缩放，
 	Point point(ui.Width->text().toDouble(), ui.Height->text().toDouble());
-	_DrawRectLayer->sp->setPosition(point);
+	//_DrawRectLayer->sp->setPosition(point);
 	if (myVector != NULL)
 	{
 		myVector->_width = ui.Width->text().toDouble();
@@ -1205,7 +1217,7 @@ void QtEdit::MySpriteChange()
 	}
 	//if (ui.ScallX->text().toDouble() > 0.0)
 	{
-		_DrawRectLayer->sp->setScaleX(ui.ScallX->text().toDouble() );
+		//_DrawRectLayer->sp->setScaleX(ui.ScallX->text().toDouble() );
 		if (myVector != NULL)
 		{
 			myVector->_ScallX = ui.ScallX->text().toDouble();
@@ -1213,12 +1225,13 @@ void QtEdit::MySpriteChange()
 	}
 	//if (ui.ScallY->text().toDouble() > 0.0)
 	{
-		_DrawRectLayer->sp->setScaleY(ui.ScallY->text().toDouble());
+		//_DrawRectLayer->sp->setScaleY(ui.ScallY->text().toDouble());
 		if (myVector != NULL)
 		{
 			myVector->_ScallY = ui.ScallY->text().toDouble();
 		}
 	}
+	_DrawRectLayer->setSpritePosition(point.x, point.y, ui.ScallX->text().toFloat(), ui.ScallY->text().toFloat());
 	if (btn != nullptr)
 	{
 		int i;
@@ -1389,6 +1402,7 @@ void QtEdit::doSaveData(QString name , bool istobase)
 			attsx = -100.0;
 			injex = -100.0;
 			bodsx = -100.0;
+			effex = -100.0;
 			item.clear();
 			_tempSp = _tempVector->Sprites.at(j);
 			if (_tempSp->attackVertices != nullptr && _tempSp->Is_AttFra)
@@ -1520,9 +1534,9 @@ void QtEdit::AddAnimationList(QString full_path_name)
 	re_file_path = file_path;
 	int dir_count;
 	QDir dir(file_path);
-	if (full_path_name.indexOf("c3b") || full_path_name.indexOf("c3t"))
+	if (1 == SpiteS_Model)
 	{
-		SpiteS_Model = 1;
+		//SpiteS_Model = 1;
 		//判断路径是否存在
 		if (!dir.exists(file_path))
 		{
@@ -1542,7 +1556,7 @@ void QtEdit::AddAnimationList(QString full_path_name)
 	}
 	else if (full_path_name.indexOf("atlas"))
 	{
-		SpiteS_Model = 2;
+		//SpiteS_Model = 2;
 	}
 	animation_list.clear();
 	//获取分隔符
@@ -1598,6 +1612,14 @@ void QtEdit::AddAnimationList(QString full_path_name)
 		//	imageItem1_1 = new QTreeWidgetItem(imageItem1, QStringList(QString(self->animations[i]->name))); //添加子节点
 		//	imageItem1->addChild(imageItem1_1);
 		//}
+		vector<string> ani;
+		ani = _DrawRectLayer->getSpineAnimation();
+		for (i = 0; i < ani.size(); i ++)
+		{
+			animation_list.push_back(ani.at(i).c_str());
+			imageItem1_1 = new QTreeWidgetItem(imageItem1, QStringList(QString(ani.at(i).c_str()))); //添加子节点
+			imageItem1->addChild(imageItem1_1);
+		}
 			
 	}
 	_mycol = 0;
@@ -1612,7 +1634,14 @@ void QtEdit::AddAnimationList(QString full_path_name)
 void QtEdit::AnimationTreeWidgetClick(QTreeWidgetItem * item, int column)
 {
 	int last_rol = -1;
-	last_rol = _DrawRectLayer->animation->getDuration() * oneFPX;
+	if (1 == SpiteS_Model)
+	{
+		last_rol = _DrawRectLayer->animation->getDuration() * oneFPX;
+	}
+	else
+	{
+		last_rol = _DrawRectLayer->_MySpineDuration * oneFPX;
+	}
 	last_rol++;
 	QTreeWidgetItem *parent = item->parent();
 	if (NULL == parent || !is_import) //注意：最顶端项是没有父节点的，双击这些项时注意(陷阱)
@@ -1670,22 +1699,36 @@ void QtEdit::AnimationTreeWidgetClick(QTreeWidgetItem * item, int column)
 	}
 
 	std::sprintf(s, "%s %d", "CL_", col);
-	ShowMsg("animations/" + animation_list.at(col).split("animations/").at(1).toStdString());
-	_DrawRectLayer->sp->stopAllActions();
-	//CC_SAFE_RELEASE(_DrawRectLayer->animation);
-	//CC_SAFE_RELEASE(_DrawRectLayer->animate);
-	_DrawRectLayer->animation = Animation3D::getOrCreate(animation_list.at(col).toStdString());
-	if (_DrawRectLayer->animation != NULL)
+	//
+	if (1 == SpiteS_Model)
 	{
-		_DrawRectLayer->animate = Animate3D::create(_DrawRectLayer->animation);
-		_DrawRectLayer->animate->is_auto_update = false;
-		_DrawRectLayer->_RepeatForever = RepeatForever::create(_DrawRectLayer->animate);
-		_DrawRectLayer->sp->runAction(_DrawRectLayer->_RepeatForever);
+		ShowMsg("animations/" + animation_list.at(col).split("animations/").at(1).toStdString());
+		_DrawRectLayer->sp->stopAllActions();
+		//CC_SAFE_RELEASE(_DrawRectLayer->animation);
+		//CC_SAFE_RELEASE(_DrawRectLayer->animate);
+		_DrawRectLayer->animation = Animation3D::getOrCreate(animation_list.at(col).toStdString());
+		if (_DrawRectLayer->animation != NULL)
+		{
+			_DrawRectLayer->animate = Animate3D::create(_DrawRectLayer->animation);
+			_DrawRectLayer->animate->is_auto_update = false;
+			_DrawRectLayer->_RepeatForever = RepeatForever::create(_DrawRectLayer->animate);
+			_DrawRectLayer->sp->runAction(_DrawRectLayer->_RepeatForever);
+		}
+		ui.dockWidget->setWindowTitle(animation_list.at(col));
+		setSlideEndFPX(_DrawRectLayer->animation->getDuration() * oneFPX * 1);
+		setPerWiget(_DrawRectLayer->animation->getDuration() * oneFPX);
 	}
-	ui.dockWidget->setWindowTitle(animation_list.at(col));
-	setSlideEndFPX(_DrawRectLayer->animation->getDuration() * oneFPX * 1);
-	setPerWiget(_DrawRectLayer->animation->getDuration() * oneFPX);
-	//AddSliderButton();
+	else
+	{
+		ShowMsg(animation_list.at(col).toStdString());
+		_DrawRectLayer->MySpineUnUpdate();
+		_DrawRectLayer->setMySpineAnimation(animation_list.at(col).toStdString().c_str());
+		ui.dockWidget->setWindowTitle(animation_list.at(col));
+		setSlideEndFPX(_DrawRectLayer->_MySpineDuration * oneFPX * 1);
+		setPerWiget(_DrawRectLayer->_MySpineDuration * oneFPX);
+	}
+	
+	////AddSliderButton();
 	btn = sliderButton.at(0);
 	btn->Is_Click = true;
 	btn->setPalette(QPalette(Qt::green));

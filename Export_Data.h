@@ -4,6 +4,14 @@
 #include "iostream"
 #include <vector>
 #include "MyVector.h"
+//#include "MyConfig.h"
+#include "qtedit.h"
+//#include "MySpritePoint.h"
+#include "json/json.h"
+#include "ATLENC.H"
+#include "atlstr.h "
+#include "ByteArray.h"
+#include <fstream>
 using namespace std;
 class Export_Data
 {
