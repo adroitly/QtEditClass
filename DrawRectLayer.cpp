@@ -122,17 +122,24 @@ vector<string> DrawRectLayer::getSpineAnimation()
 void DrawRectLayer::updatemySpine(std::string filename , std::string json_name)
 {
 	int i;
-	_MySpine = _MySpine->createWithFile(json_name, filename, 0.6f);
+	_MySpine = _MySpine->createWithFile(json_name, filename );
 	_MySpine->setPosition(300, 100);
-	this->removeAllChildren();
 	this->addChild(_MySpine);
+	_MySpine->unscheduleUpdate();
 	SpineAnimationList.clear();
 	spSkeletonData * self = _MySpine->getSkeleton()->data;
-	for (i = 0; i < self->animationsCount; ++i)
+	for (i = 0; i < self->skinsCount; i ++)
+	{
+		const char * skyname = self->skins[i]->name;
+		_MySpine->setSkin(skyname);
+		//break;
+	}
+	for (i = 0; i < self->animationsCount; i ++)
 	{
 		//log("%s", self->animations[i]->name);
 		SpineAnimationList.push_back(self->animations[i]->name);
 	}
+	_MySpine->setToSetupPose();
 }
 float DrawRectLayer::getMySpineDuration()
 {
@@ -143,14 +150,12 @@ void DrawRectLayer::setMySpineAnimation(const char * _name , bool is_te /* = tru
 {
 	_MySpine->setToSetupPose();
 	_entry = _MySpine->setAnimation(0, _name, is_te);
-	//_entry = spAnimationState_getCurrent(_MySpine->getState(), 0);
 	_MySpineDuration = _entry->animation->duration;
-	//_MySpine->unscheduleUpdate();
 }
 
 void DrawRectLayer::updateMySpinePercentage(float dt)
 {
-	log("all = %f  now = %f", _MySpineDuration , dt);
+	//log("all = %f  now = %f", _MySpineDuration , dt);
 	_MySpine->UpdateMySpinePer(_MySpine, dt);
 	spAnimationState_apply(_MySpine->getState(), _MySpine->getSkeleton());
 	spSkeleton_updateWorldTransform(_MySpine->getSkeleton());
@@ -158,7 +163,10 @@ void DrawRectLayer::updateMySpinePercentage(float dt)
 
 void DrawRectLayer::MySpineUnUpdate()
 {
-	_MySpine->unscheduleUpdate();
+	if (_MySpine != NULL)
+	{
+		_MySpine->unscheduleUpdate();
+	}
 }
 
 void DrawRectLayer::setSpritePosition(float with, float height, float sacllx, float scally)

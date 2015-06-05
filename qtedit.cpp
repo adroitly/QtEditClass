@@ -301,6 +301,8 @@ void QtEdit::wheelEvent(QWheelEvent *e)
 		}
 		BoxChangeInput("");
 	}
+	pu = 1;
+	pausebuttonclick();
 	ChangeInput();
 }
 void QtEdit::setMyBox(int a)
@@ -423,9 +425,11 @@ void QtEdit::importSpine()
 		if (is_import)
 		{
 			animation_list.clear();
-			_DrawRectLayer->removeAllChildrenWithCleanup(false);
+			_DrawRectLayer->removeAllChildrenWithCleanup(true);
 			_DrawRectLayer->spritePoints.clear();
 			_DrawRectLayer->DrawInitPosi();
+			pu = 1;
+			pausebuttonclick();
 		}
 
 		_DrawRectLayer->updatemySpine(file_name.toStdString(), (fi.path() + "/" + fi.fileName().split(".").at(0)  +".json").toStdString());
@@ -438,10 +442,11 @@ void QtEdit::importSpine()
 			if (is_import)
 			{
 				_end_dt = _DrawRectLayer->_MySpineDuration* oneFPX;
+				_DrawRectLayer->EndUpdate();
 			}
 			_end_dt = _end_dt > FPX ? _end_dt : FPX;
 			is_import = true;
-			_DrawRectLayer->setMySpineAnimation(animation_list.at(0).toStdString().c_str() , false);
+			_DrawRectLayer->setMySpineAnimation(animation_list.at(0).toStdString().c_str() , true);
 			//_DrawRectLayer->updatemydata(file_name.toStdString(), file_name.split(".").at(0).toStdString() + ".png", animation_list.at(0).toStdString());
 			ui.dockWidget->setWindowTitle(animation_list.at(0));
 			setSlideEndFPX(_DrawRectLayer->_MySpineDuration * oneFPX * 1);
@@ -741,9 +746,12 @@ void QtEdit::import()
 		if (is_import)
 		{
 			animation_list.clear();
-			_DrawRectLayer->removeAllChildrenWithCleanup(false);
+			_DrawRectLayer->removeAllChildrenWithCleanup(true);
 			_DrawRectLayer->spritePoints.clear();
 			_DrawRectLayer->DrawInitPosi();
+			_DrawRectLayer->EndUpdate();
+			pu = 1;
+			pausebuttonclick();
 		}
 		
 		AddAnimationList(file_name);
@@ -1811,7 +1819,7 @@ void QtEdit::AnimationTreeWidgetClick(QTreeWidgetItem * item, int column)
 	else
 	{
 		ShowMsg(animation_list.at(col).toStdString());
-		_DrawRectLayer->MySpineUnUpdate();
+		//_DrawRectLayer->MySpineUnUpdate();
 		_DrawRectLayer->setMySpineAnimation(animation_list.at(col).toStdString().c_str());
 		ui.dockWidget->setWindowTitle(animation_list.at(col));
 		setSlideEndFPX(_DrawRectLayer->_MySpineDuration * oneFPX * 1);
