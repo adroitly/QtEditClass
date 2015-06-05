@@ -62,10 +62,10 @@ void DrawRectLayer::DrawInitPosi()
 {
 	PosiDraw = DrawNode::create();
 	Vec2 point1[4];
-	point1[0] = Vec2(495, 95);
-	point1[1] = Vec2(505, 95);
-	point1[2] = Vec2(505, 105);
-	point1[3] = Vec2(495, 105);
+	point1[0] = Vec2(_IN_Width - 3, _IN_Height - 3);
+	point1[1] = Vec2(_IN_Width + 3, _IN_Height - 3);
+	point1[2] = Vec2(_IN_Width + 3, _IN_Height + 3);
+	point1[3] = Vec2(_IN_Width - 3, _IN_Height + 3);
 	PosiDraw->drawPolygon(point1, 4, Color4F(1, 0, 0, 1), 1, Color4F(0, 1, 0, 1));
 	this->addChild(PosiDraw , 100);
 }
