@@ -248,34 +248,41 @@ void QtEdit::wheelEvent(QWheelEvent *e)
 	{
 		ui.Width->setText(QString::number(ui.Width->text().toFloat() + down_up));
 		ui.Re_Width->setText(QString::number(ui.Re_Width->text().toFloat() + down_up));
+		ChangeInput();
 	}
 	else if (ui.Height->hasFocus())
 	{
 		ui.Height->setText(QString::number(ui.Height->text().toFloat() + down_up));
 		ui.Re_Height->setText(QString::number(ui.Re_Height->text().toFloat() + down_up));
+		ChangeInput();
 	}
 	else if (ui.Re_Width->hasFocus())
 	{
 		ui.Width->setText(QString::number(ui.Width->text().toFloat() + down_up));
 		ui.Re_Width->setText(QString::number(ui.Re_Width->text().toFloat() + down_up));
+		ChangeInput();
 	}
 	else if (ui.Re_Height->hasFocus())
 	{
 		ui.Height->setText(QString::number(ui.Height->text().toFloat() + down_up));
 		ui.Re_Height->setText(QString::number(ui.Re_Height->text().toFloat() + down_up));
+		ChangeInput();
 	}
-	else if (ui.Rotate->hasFocus())
-	{
-		ui.Rotate->setText(QString::number(ui.Rotate->text().toFloat() + down_up));
-	}
+	//else if (ui.Rotate->hasFocus())
+	//{
+	//	ui.Rotate->setText(QString::number(ui.Rotate->text().toFloat() + down_up));
+	//	ChangeInput();
+	//}
 	else if (ui.ScallX->hasFocus())
 	{
 		ui.ScallX->setText(QString::number(ui.ScallX->text().toFloat() + (down_up * 0.1)));
+		ChangeInput();
 	}
 	else if (ui.ScallY->hasFocus())
 	{
 		ui.ScallY->setText(QString::number(ui.ScallY->text().toFloat() + (down_up * 0.1)));
 		//ReChangeInput();
+		ChangeInput();
 	}
 	else if (ui.St_Width->text() != "")
 	{
@@ -287,9 +294,9 @@ void QtEdit::wheelEvent(QWheelEvent *e)
 		{
 			ui.St_Height->setText(QString::number(ui.St_Height->text().toFloat() + down_up));
 		}
-		else if (ui.St_Height->hasFocus())
+		else if (ui.En_Width->hasFocus())
 		{
-			ui.St_Height->setText(QString::number(ui.St_Height->text().toFloat() + down_up));
+			ui.En_Width->setText(QString::number(ui.En_Width->text().toFloat() + down_up));
 		}
 		else if (ui.En_Height->hasFocus())
 		{
@@ -300,10 +307,9 @@ void QtEdit::wheelEvent(QWheelEvent *e)
 			ui.Rotate->setText(QString::number(ui.Rotate->text().toFloat() + down_up));
 		}
 		BoxChangeInput("");
+		pu = 1;
+		pausebuttonclick();
 	}
-	pu = 1;
-	pausebuttonclick();
-	ChangeInput();
 }
 void QtEdit::setMyBox(int a)
 {
@@ -314,28 +320,39 @@ void QtEdit::setMyBox(int a)
 		//ui.En_Width->setText(QString("%1").arg(_DrawRectLayer->OneSpritePoint->injureVertices[2].x));
 		//ui.En_Height->setText(QString("%1").arg(_DrawRectLayer->OneSpritePoint->injureVertices[2].y));
 		//ui.Rotate->setText(QString("%1").arg(_DrawRectLayer->OneSpritePoint->RotateInj));
-		if (_DrawRectLayer->injuredNode->Relativevertices[0].x == -3500 && _DrawRectLayer->injuredNode->Relativevertices[0].y == -700)
-		{
-			Vec2 posi(ui.Width->text().toFloat(), ui.Height->text().toFloat());
-			_DrawRectLayer->injuredNode->setRelativeVertices(_DrawRectLayer->injuredNode->Vertices,posi );
-			_DrawRectLayer->injuredNode->setRelativeScallX(ui.Width->text().toFloat(), _IN_ScallX, ui.ScallX->text().toFloat());
-			_DrawRectLayer->injuredNode->setRelativeScallY(ui.Height->text().toFloat(), _IN_ScallY, ui.ScallY->text().toFloat());
-		}
+		//if (_DrawRectLayer->injuredNode->Relativevertices[0].x == -3500 && _DrawRectLayer->injuredNode->Relativevertices[0].y == -700)
+		//{
+		//	Vec2 posi(ui.Width->text().toFloat(), ui.Height->text().toFloat());
+		//	_DrawRectLayer->injuredNode->setRelativeVertices(_DrawRectLayer->injuredNode->Vertices,posi );
+		//	_DrawRectLayer->injuredNode->setRelativeScallX(ui.Width->text().toFloat(), _IN_ScallX, ui.ScallX->text().toFloat());
+		//	_DrawRectLayer->injuredNode->setRelativeScallY(ui.Height->text().toFloat(), _IN_ScallY, ui.ScallY->text().toFloat());
+		//}
+		Vec2 posi(ui.Width->text().toFloat(), ui.Height->text().toFloat());
+		_DrawRectLayer->injuredNode->setRelativeVertices(_DrawRectLayer->injuredNode->Vertices, posi);
+		_DrawRectLayer->injuredNode->setRelativeScallX(ui.Width->text().toFloat(), _IN_ScallX, ui.ScallX->text().toFloat());
+		_DrawRectLayer->injuredNode->setRelativeScallY(ui.Height->text().toFloat(), _IN_ScallY, ui.ScallY->text().toFloat());
 		//else if (_DrawRectLayer->injuredNode->Rotate != 0.0)
 		//{
 		//	Vec2 posi(ui.Width->text().toFloat(), ui.Height->text().toFloat());
 		//	_DrawRectLayer->injuredNode->setRelativeVertices(_DrawRectLayer->injuredNode->Vertices, posi);
 		//}
-		ui.St_Width->setText(QString("%1").arg(_DrawRectLayer->injuredNode->Relativevertices[0].x - ui.Width->text().toFloat()));
-		ui.St_Height->setText(QString("%1").arg(_DrawRectLayer->injuredNode->Relativevertices[0].y - ui.Height->text().toFloat()));
-		ui.En_Width->setText(QString("%1").arg(_DrawRectLayer->injuredNode->Relativevertices[2].x - ui.Width->text().toFloat()));
-		ui.En_Height->setText(QString("%1").arg(_DrawRectLayer->injuredNode->Relativevertices[2].y - ui.Height->text().toFloat()));
+		ui.St_Width->setText(QString("%1").arg(int(_DrawRectLayer->injuredNode->Relativevertices[0].x - ui.Width->text().toFloat())));
+		ui.St_Height->setText(QString("%1").arg(int(_DrawRectLayer->injuredNode->Relativevertices[0].y - ui.Height->text().toFloat())));
+		ui.En_Width->setText(QString("%1").arg(int(_DrawRectLayer->injuredNode->Relativevertices[2].x - ui.Width->text().toFloat())));
+		ui.En_Height->setText(QString("%1").arg(int(_DrawRectLayer->injuredNode->Relativevertices[2].y - ui.Height->text().toFloat())));
 		ui.Rotate->setText(QString("%1").arg(180.0 / PI * (_DrawRectLayer->injuredNode->Rotate)));
 
 	}
 	else if (a == 2)
 	{
-		if (_DrawRectLayer->attackNode->Relativevertices[0].x == -3500 && _DrawRectLayer->attackNode->Relativevertices[0].y == -700)
+		//if (_DrawRectLayer->attackNode->Relativevertices[0].x == -3500 && _DrawRectLayer->attackNode->Relativevertices[0].y == -700)
+		//{
+		//	Vec2 posi(ui.Width->text().toFloat(), ui.Height->text().toFloat());
+		//	_DrawRectLayer->attackNode->setRelativeVertices(_DrawRectLayer->attackNode->Vertices, posi);
+		//	_DrawRectLayer->attackNode->setRelativeScallX(ui.Width->text().toFloat(), _IN_ScallX, ui.ScallX->text().toFloat());
+		//	_DrawRectLayer->attackNode->setRelativeScallY(ui.Height->text().toFloat(), _IN_ScallY, ui.ScallY->text().toFloat());
+		//}
+		//if (_DrawRectLayer->attackNode->Relativevertices[0].x == -500 && _DrawRectLayer->attackNode->Relativevertices[0].y == -100)
 		{
 			Vec2 posi(ui.Width->text().toFloat(), ui.Height->text().toFloat());
 			_DrawRectLayer->attackNode->setRelativeVertices(_DrawRectLayer->attackNode->Vertices, posi);
@@ -347,37 +364,41 @@ void QtEdit::setMyBox(int a)
 		//	Vec2 posi(ui.Width->text().toFloat(), ui.Height->text().toFloat());
 		//	_DrawRectLayer->attackNode->setRelativeVertices(_DrawRectLayer->attackNode->Vertices, posi);
 		//}
-		ui.St_Width->setText(QString("%1").arg(_DrawRectLayer->attackNode->Relativevertices[0].x - ui.Width->text().toFloat()));
-		ui.St_Height->setText(QString("%1").arg(_DrawRectLayer->attackNode->Relativevertices[0].y - ui.Height->text().toFloat()));
-		ui.En_Width->setText(QString("%1").arg(_DrawRectLayer->attackNode->Relativevertices[2].x - ui.Width->text().toFloat()));
-		ui.En_Height->setText(QString("%1").arg(_DrawRectLayer->attackNode->Relativevertices[2].y - ui.Height->text().toFloat()));
+		ui.St_Width->setText(QString("%1").arg(int(_DrawRectLayer->attackNode->Relativevertices[0].x - ui.Width->text().toFloat())));
+		ui.St_Height->setText(QString("%1").arg(int(_DrawRectLayer->attackNode->Relativevertices[0].y - ui.Height->text().toFloat())));
+		ui.En_Width->setText(QString("%1").arg(int(_DrawRectLayer->attackNode->Relativevertices[2].x - ui.Width->text().toFloat())));
+		ui.En_Height->setText(QString("%1").arg(int(_DrawRectLayer->attackNode->Relativevertices[2].y - ui.Height->text().toFloat())));
 		ui.Rotate->setText(QString("%1").arg(180.0 / PI * (_DrawRectLayer->attackNode->Rotate)));
 		
 	}
 	else if (a == 3 )
 	{
-		if (_DrawRectLayer->bodyNode->Relativevertices[0].x == -3500 && _DrawRectLayer->bodyNode->Relativevertices[0].y == -700)
+		//if (_DrawRectLayer->bodyNode->Relativevertices[0].x == -3500 && _DrawRectLayer->bodyNode->Relativevertices[0].y == -700)
 		{
 			Vec2 posi(ui.Width->text().toFloat(), ui.Height->text().toFloat());
 			_DrawRectLayer->bodyNode->setRelativeVertices(_DrawRectLayer->bodyNode->Vertices, posi);
+			_DrawRectLayer->bodyNode->setRelativeScallX(ui.Width->text().toFloat(), _IN_ScallX, ui.ScallX->text().toFloat());
+			_DrawRectLayer->bodyNode->setRelativeScallY(ui.Height->text().toFloat(), _IN_ScallY, ui.ScallY->text().toFloat());
 		}
-		ui.St_Width->setText(QString("%1").arg(_DrawRectLayer->bodyNode->Relativevertices[0].x - ui.Width->text().toFloat()));
-		ui.St_Height->setText(QString("%1").arg(_DrawRectLayer->bodyNode->Relativevertices[0].y - ui.Height->text().toFloat()));
-		ui.En_Width->setText(QString("%1").arg(_DrawRectLayer->bodyNode->Relativevertices[2].x - ui.Width->text().toFloat()));
-		ui.En_Height->setText(QString("%1").arg(_DrawRectLayer->bodyNode->Relativevertices[2].y - ui.Height->text().toFloat()));
+		ui.St_Width->setText(QString("%1").arg(int(_DrawRectLayer->bodyNode->Relativevertices[0].x - ui.Width->text().toFloat())));
+		ui.St_Height->setText(QString("%1").arg(int(_DrawRectLayer->bodyNode->Relativevertices[0].y - ui.Height->text().toFloat())));
+		ui.En_Width->setText(QString("%1").arg(int(_DrawRectLayer->bodyNode->Relativevertices[2].x - ui.Width->text().toFloat())));
+		ui.En_Height->setText(QString("%1").arg(int(_DrawRectLayer->bodyNode->Relativevertices[2].y - ui.Height->text().toFloat())));
 		ui.Rotate->setText(QString("%1").arg(_DrawRectLayer->bodyNode->Rotate));
 	}
 	else if (a == 4)
 	{
-		if (_DrawRectLayer->effefcNode->Relativevertices[0].x == -3500 && _DrawRectLayer->effefcNode->Relativevertices[0].y == -700)
+		//if (_DrawRectLayer->effefcNode->Relativevertices[0].x == -3500 && _DrawRectLayer->effefcNode->Relativevertices[0].y == -700)
 		{
 			Vec2 posi(ui.Width->text().toFloat(), ui.Height->text().toFloat());
 			_DrawRectLayer->effefcNode->setRelativeVertices(_DrawRectLayer->effefcNode->Vertices, posi);
+			_DrawRectLayer->effefcNode->setRelativeScallX(ui.Width->text().toFloat(), _IN_ScallX, ui.ScallX->text().toFloat());
+			_DrawRectLayer->effefcNode->setRelativeScallY(ui.Height->text().toFloat(), _IN_ScallY, ui.ScallY->text().toFloat());
 		}
-		ui.St_Width->setText(QString("%1").arg(_DrawRectLayer->effefcNode->Relativevertices[0].x - ui.Width->text().toFloat()));
-		ui.St_Height->setText(QString("%1").arg(_DrawRectLayer->effefcNode->Relativevertices[0].y - ui.Height->text().toFloat()));
-		ui.En_Width->setText(QString("%1").arg(_DrawRectLayer->effefcNode->Relativevertices[2].x - ui.Width->text().toFloat()));
-		ui.En_Height->setText(QString("%1").arg(_DrawRectLayer->effefcNode->Relativevertices[2].y - ui.Height->text().toFloat()));
+		ui.St_Width->setText(QString("%1").arg(int(_DrawRectLayer->effefcNode->Relativevertices[0].x - ui.Width->text().toFloat())));
+		ui.St_Height->setText(QString("%1").arg(int(_DrawRectLayer->effefcNode->Relativevertices[0].y - ui.Height->text().toFloat())));
+		ui.En_Width->setText(QString("%1").arg(int(_DrawRectLayer->effefcNode->Relativevertices[2].x - ui.Width->text().toFloat())));
+		ui.En_Height->setText(QString("%1").arg(int(_DrawRectLayer->effefcNode->Relativevertices[2].y - ui.Height->text().toFloat())));
 		ui.Rotate->setText(QString("%1").arg(_DrawRectLayer->effefcNode->Rotate));
 	}
 }
@@ -399,8 +420,20 @@ void QtEdit::importSpine()
 	QString filter = openSpineFile_Path;;
 	if (openSpineFile_Path.lastIndexOf(".") != -1)
 	{
-		filter = "all files (*.atlas);;all files (*)";
-	}file_name = QFileDialog::getOpenFileName(this,
+		filter = "atlas files (*.atlas);;all files (*)";
+	}
+	if (this->windowTitle().indexOf("*") != -1)
+	{
+		QMessageBox::StandardButton rb = QMessageBox::question(NULL, "information", codec->toUnicode("当前没有操作保存，是否先保存再导入资源?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+		if (rb == QMessageBox::Yes)
+		{
+			//import();
+			_Export_Data = Export_Data::getInstence();
+			_Export_Data->DrawDataTo_Qtedit();
+			_Export_Data->Dosave_JsonData(saveDataName.toStdString().c_str(), spritesPoints, true);
+		}
+	}
+	file_name = QFileDialog::getOpenFileName(this,
 		codec->toUnicode("导入atlas文件"), openSpineFile_Path, filter);
 	if (!file_name.isNull())
 	{
@@ -412,12 +445,6 @@ void QtEdit::importSpine()
 		//QStringList strlist = file_name.split("Resources/");
 		QString Re_File_name = file_name.mid(file_name.lastIndexOf("/") + 1);
 		this->setWindowTitle(Re_File_name);
-
-		//if (is_import && _DrawRectLayer->sp)
-		//{
-		//	_DrawRectLayer->removeChild(_DrawRectLayer->sp, true);
-		//}
-
 		QFileInfo fi;
 		fi = QFileInfo(file_name);
 		saveDataName = fi.path() + "/" + fi.fileName().split(".").at(0) + tr(".data");
@@ -439,19 +466,17 @@ void QtEdit::importSpine()
 		if (animation_list.size() != 0)
 		{
 			float _end_dt = -1;
-			if (is_import)
+			if (is_import&& _DrawRectLayer->animation)
 			{
-				_end_dt = _DrawRectLayer->_MySpineDuration* oneFPX;
-				_DrawRectLayer->EndUpdate();
+				_end_dt = _DrawRectLayer->_MySpineDuration * oneFPX;
 			}
 			_end_dt = _end_dt > FPX ? _end_dt : FPX;
 			is_import = true;
-			_DrawRectLayer->setMySpineAnimation(animation_list.at(0).toStdString().c_str() , true);
-			//_DrawRectLayer->updatemydata(file_name.toStdString(), file_name.split(".").at(0).toStdString() + ".png", animation_list.at(0).toStdString());
+			_DrawRectLayer->setMySpineAnimation(animation_list.at(0).toStdString().c_str(), true);
 			ui.dockWidget->setWindowTitle(animation_list.at(0));
 			setSlideEndFPX(_DrawRectLayer->_MySpineDuration * oneFPX * 1);
 			setPerWiget(_DrawRectLayer->_MySpineDuration * oneFPX);
-			////从.data文件中导入数据
+			//从.data文件中导入数据
 			Init();
 
 			btn = sliderButton.at(0);
@@ -462,19 +487,10 @@ void QtEdit::importSpine()
 			showline->setVisible(true);
 			_lastButton = btn;
 
-			////MySpriteChange();
+
 			setMyFrame(-1, -1, false, _DrawRectLayer->_MySpineDuration * oneFPX > _end_dt ? _DrawRectLayer->_MySpineDuration * oneFPX : _end_dt);
 			SlderAnimationAction();
-			SetMyUI();
-			//btn = sliderButton.at(0);
-			//btn->Is_Click = true;
-			//btn->setPalette(QPalette(Qt::green));
-			//btn->setAutoFillBackground(true);
-			//showline = sliderFameshow.at((btn->Singl_ID));
-			//showline->setVisible(true);
-			//_lastButton = btn;
-			//SlderAnimationAction();
-			//AddSliderButton();
+
 		}
 		else
 		{
@@ -690,7 +706,7 @@ void QtEdit::ActionHelp()
 	showabout += "贴图的名字必须和model的一样，并且贴图文件是.png格式，动作的c3b和c3t必须放在animations文件夹下\n";
 	showabout += "本编辑器还支持Spine的操作，Spine的文件要求是json文件和atlas文件名必须一致，否则出错,\n";
 	showabout += "这个编辑器支持保存操作、导出二进制文件和导出json格式操作。二进制文件格式为自己的格式";
-	showabout += "\n本编辑器存在很多问题。";
+	showabout += "\n本编辑器存在很多问题。如发现问题发邮件到：liweicg@gmail.com";
 	showabout += "\nCopyRight(©) killer & TimeNew Studios";
 	QMessageBox::about(NULL, "About Edit", codec->toUnicode(showabout.c_str()));
 }
@@ -719,6 +735,16 @@ void QtEdit::import()
 		else
 		{
 			filter = tr("c3t Files (*.c3t);; c3b Files (*.c3b);; all Files (*)");
+		}
+	}
+	if (this->windowTitle().indexOf("*") != -1)
+	{
+		QMessageBox::StandardButton rb = QMessageBox::question(NULL, "information", codec->toUnicode("当前没有操作保存，是否先保存再导入资源?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+		if (rb == QMessageBox::Yes)
+		{
+			_Export_Data = Export_Data::getInstence();
+			_Export_Data->DrawDataTo_Qtedit();
+			_Export_Data->Dosave_JsonData(saveDataName.toStdString().c_str(), spritesPoints, true);
 		}
 	}
 	file_name = QFileDialog::getOpenFileName(this,
@@ -1306,19 +1332,19 @@ void QtEdit::SlderChange(float Percentage)
 void QtEdit::MySpriteChange()
 {
 	//由于窗口植入QT中有所变化，所以需要进行一个数值的等宽高缩放，
-	Point point(ui.Width->text().toDouble(), ui.Height->text().toDouble());
+	Point point(ui.Width->text().toFloat(), ui.Height->text().toFloat());
 	//_DrawRectLayer->sp->setPosition(point);
 	if (myVector != NULL)
 	{
-		myVector->_width = ui.Width->text().toDouble();
-		myVector->_height = ui.Height->text().toDouble();
+		myVector->_width = ui.Width->text().toFloat();
+		myVector->_height = ui.Height->text().toFloat();
 	}
 	//if (ui.ScallX->text().toDouble() > 0.0)
 	{
 		//_DrawRectLayer->sp->setScaleX(ui.ScallX->text().toDouble() );
 		if (myVector != NULL)
 		{
-			myVector->_ScallX = ui.ScallX->text().toDouble();
+			myVector->_ScallX = ui.ScallX->text().toFloat();
 		}
 	}
 	//if (ui.ScallY->text().toDouble() > 0.0)
@@ -1326,7 +1352,7 @@ void QtEdit::MySpriteChange()
 		//_DrawRectLayer->sp->setScaleY(ui.ScallY->text().toDouble());
 		if (myVector != NULL)
 		{
-			myVector->_ScallY = ui.ScallY->text().toDouble();
+			myVector->_ScallY = ui.ScallY->text().toFloat();
 		}
 	}
 	_DrawRectLayer->setSpritePosition(point.x, point.y, ui.ScallX->text().toFloat(), ui.ScallY->text().toFloat());
@@ -1500,7 +1526,7 @@ void QtEdit::doSaveData(QString name , bool istobase)
 			attsx = -100.0;
 			injex = -100.0;
 			bodsx = -100.0;
-			effex = -100.0;
+			effsx = -100.0;
 			item.clear();
 			_tempSp = _tempVector->Sprites.at(j);
 			if (_tempSp->attackVertices != nullptr && _tempSp->Is_AttFra)
@@ -1528,7 +1554,13 @@ void QtEdit::doSaveData(QString name , bool istobase)
 				bodex = _tempSp->bodyVertices[2].x;
 				bodey = _tempSp->bodyVertices[2].y;
 			}
-
+			if (_tempSp->effectVertices != nullptr && _tempSp->Is_EffFra)
+			{
+				effsx = _tempSp->effectVertices[0].x;
+				effsy = _tempSp->effectVertices[0].y;
+				effex = _tempSp->effectVertices[2].x;
+				effey = _tempSp->effectVertices[2].y;
+			}
 			if (_tempSp->Is_ActFra)
 			{
 				SItem.clear();
@@ -1815,6 +1847,7 @@ void QtEdit::AnimationTreeWidgetClick(QTreeWidgetItem * item, int column)
 		ui.dockWidget->setWindowTitle(animation_list.at(col));
 		setSlideEndFPX(_DrawRectLayer->animation->getDuration() * oneFPX * 1);
 		setPerWiget(_DrawRectLayer->animation->getDuration() * oneFPX);
+		SetMyUI();
 	}
 	else
 	{
@@ -1834,7 +1867,7 @@ void QtEdit::AnimationTreeWidgetClick(QTreeWidgetItem * item, int column)
 	showline = sliderFameshow.at((btn->Singl_ID));
 	showline->setVisible(true);
 	_lastButton = btn;
-	SetMyUI();
+
 	setMyFrame(-1, -1, false, last_rol);
 	SlderAnimationAction();
 }

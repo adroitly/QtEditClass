@@ -69,7 +69,9 @@ void QtButton::CheckButton(int k)
 				_QtEdit->btn = _QtEdit->sliderButton.at(i + 1);
 			}
 			//_QtEdit->_lastButton = _QtButton;
-			_QtEdit->SlderAnimationAction();
+			_QtEdit->ui.PencentageSlider->setValue(_QtEdit->btn->Singl_ID);
+			//_QtEdit->AnimationSlderChange();
+			//_QtEdit->SlderAnimationAction();
 			break;
 		}
 	}

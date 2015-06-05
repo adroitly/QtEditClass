@@ -128,12 +128,6 @@ void DrawRectLayer::updatemySpine(std::string filename , std::string json_name)
 	_MySpine->unscheduleUpdate();
 	SpineAnimationList.clear();
 	spSkeletonData * self = _MySpine->getSkeleton()->data;
-	for (i = 0; i < self->skinsCount; i ++)
-	{
-		const char * skyname = self->skins[i]->name;
-		_MySpine->setSkin(skyname);
-		//break;
-	}
 	for (i = 0; i < self->animationsCount; i ++)
 	{
 		//log("%s", self->animations[i]->name);
@@ -656,6 +650,7 @@ void DrawRectLayer::removeDrawNode()
 	effefcNode = new MyDrawNode();
 	effefcNode->Rotate = _ROTATE;
 	effefcNode->setVertices(effectpoints[0], effectpoints[2]);
+	_QtEdit->setWindowTitle(_QtEdit->windowTitle().split("*").at(0) + "*");
 }
 
 void DrawRectLayer::updataOrInsertFra()
@@ -1278,15 +1273,22 @@ void DrawRectLayer::ScheduMyUpdate(float dt)
 	//showMsg(NULL, mydt , a);
 	//_QtEdit->SlderChange(mydt);
 	_QtEdit->AnimationUpdate(mydt);
-	if (mydt > _MySpineDuration)
+	if (2 == _QtEdit->SpiteS_Model)
 	{
-		mydt = 0.0;
-		//a = 0;
+		if (mydt > _MySpineDuration)
+		{
+			mydt = 0.0;
+			//a = 0;
+		}
 	}
-	//showMsg(NULL, mydt ,a ++);
-	//mydt += 0.01;
-	//animate->updateOnPercentage(mydt);
-	//showMsg("dt", mydt, 0);
+	else
+	{
+		if (mydt > animate->getDuration())
+		{
+			mydt = 0.0;
+			//a = 0;
+		}
+	}
 }
 /************************************************************************/
 /*¿ªÆô×Ô¶¯                                                              */
@@ -1295,16 +1297,17 @@ void DrawRectLayer::StartUpdate()
 {
 	mydt = 0.0;
 	//float _this_dt = 1.0;
+	float All_Time = 0.0;
 	if (1 == _QtEdit->SpiteS_Model)
 	{
-		_MySpineDuration = animate->getDuration();
+		All_Time = animate->getDuration();
 	}
 	else
 	{
-		_MySpineDuration = _MySpineDuration;
+		All_Time = _MySpineDuration;
 	}
-	oneDt = _MySpineDuration / (_MySpineDuration * oneFPX);
-	float pe = _MySpineDuration / oneFPX;
+	oneDt = All_Time / (All_Time * oneFPX);
+	float pe = All_Time / oneFPX;
 	this->schedule(schedule_selector(DrawRectLayer::ScheduMyUpdate), pe);
 }
 /************************************************************************/

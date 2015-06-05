@@ -41,7 +41,7 @@ public:
 
 	//Spine²Ù×÷
 	float getMySpineDuration();
-	float _MySpineDuration = -1;
+	float _MySpineDuration = 1;
 	void setMySpineAnimation(const char * _name , bool is_re = true);
 	void MySpineUnUpdate();
 	void updateMySpinePercentage(float dt);
