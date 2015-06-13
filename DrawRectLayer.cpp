@@ -62,10 +62,10 @@ void DrawRectLayer::DrawInitPosi()
 {
 	PosiDraw = DrawNode::create();
 	Vec2 point1[4];
-	point1[0] = Vec2(_IN_Width - 3, _IN_Height - 3);
-	point1[1] = Vec2(_IN_Width + 3, _IN_Height - 3);
-	point1[2] = Vec2(_IN_Width + 3, _IN_Height + 3);
-	point1[3] = Vec2(_IN_Width - 3, _IN_Height + 3);
+	point1[0] = Vec2(_IN_Width - 2, _IN_Height - 2);
+	point1[1] = Vec2(_IN_Width + 2, _IN_Height - 2);
+	point1[2] = Vec2(_IN_Width + 2, _IN_Height + 2);
+	point1[3] = Vec2(_IN_Width - 2, _IN_Height + 2);
 	PosiDraw->drawPolygon(point1, 4, Color4F(1, 0, 0, 1), 1, Color4F(0, 1, 0, 1));
 	this->addChild(PosiDraw , 100);
 }
@@ -185,16 +185,19 @@ void DrawRectLayer::updatemydata(std::string filename, std::string texture, std:
 {
 	mydt = 0.0;
 	sp = Sprite3D::create(filename, texture);
+	Vec3 sprotate(0, 90, 0);
+	sp->setRotation3D(sprotate);
 	//sp->setAnchorPoint(ccp(0.5, 0.5));
 	sp->setCullFaceEnabled(false);
 	this->addChild(sp);
 	animation = Animation3D::getOrCreate(file_animation);
 	if (animation != NULL)
-	{
+	{ 
 		animate = Animate3D::create(animation);
 		animate->is_auto_update = false;
 		_RepeatForever = RepeatForever::create(animate);
-		sp->runAction(_RepeatForever);
+		sp->runAction(_RepeatForever); 
+
 	}
 }
 void DrawRectLayer::actioncallback(Node* pSender)
@@ -222,7 +225,7 @@ void DrawRectLayer::doDraw()
 	if (attackNode->Rotate == 0.0)
 	{
 		if (attackNode != nullptr && attackNode->Vertices != nullptr && attackNode->Vertices[0].x != 0)
-		{
+		{ 
 			attackNode->autorelease();
 			attackNode->retain();
 			if (Is_Moveto_Add && _QtEdit->Ctrl_Is_On)

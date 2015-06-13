@@ -50,7 +50,7 @@ QtEdit::QtEdit(QWidget *parent)
 	ui.SceneWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
 	ui.OutWiget->setWindowTitle("Out Put");
 	//ui.OutWiget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-	ui.PerWiget->setWindowTitle("PerCentage");
+	ui.PerWiget->setWindowTitle("Frame Control");
 	ui.PerWiget->setFeatures(QDockWidget::NoDockWidgetFeatures);
 	ui.dockWidget->setWindowTitle("");
 	ui.dockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
@@ -718,7 +718,7 @@ void QtEdit::openData()
 	//system("F:\QT\private\QtEdit\Debug.win32\Start.bat");
 	QDir dir;
 	//QString path = dir.currentPath();
-	std::sprintf(myshowstr, "cmd   /c   %s/StartFBXToCocos.bat", dir.currentPath().toStdString().c_str());
+	std::sprintf(myshowstr, "cmd   /c   %s/RunScore/StartFBXToCocos.bat", dir.currentPath().toStdString().c_str());
 	//WinExec("cmd   /c   " +  + "/Start.bat", SW_HIDE);
 	WinExec(myshowstr, SW_HIDE);
 }
