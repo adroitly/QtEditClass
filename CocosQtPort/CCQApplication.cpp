@@ -58,7 +58,7 @@ CCQApplication* CCQApplication::getInstance()
 void CCQApplication::timerUpdate()
 {
 	Director::getInstance()->mainLoop();
-	//CCQGLView::getInstance()->updateWindowSize();
+	CCQGLView::getInstance()->updateWindowSize();
 }
 
 NS_CC_END

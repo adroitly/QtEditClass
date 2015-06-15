@@ -27,13 +27,13 @@ bool AppDelegate::applicationDidFinishLaunching() {
     // initialize director
 	auto director = Director::getInstance();
 	auto glview = CCQGLView::getInstance();
-	glview->setBgColor(Color4B(50, 50, 50, 255));
+	//glview->setBgColor(Color4B(50, 50, 50, 255));
 	director->setOpenGLView(glview);
 	_mainWindow.setGLView(glview->getGLWidget());
 	_mainWindow.show();
 	::SetParent(glview->getHWND(), _mainWindow.m_Parent);
     // turn on display FPS
-    director->setDisplayStats(true);
+    director->setDisplayStats(false);
 
     // set FPS. the default value is 1.0/60 if you don't call this
     director->setAnimationInterval(1.0 / 60);

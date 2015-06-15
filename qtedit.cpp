@@ -50,7 +50,7 @@ QtEdit::QtEdit(QWidget *parent)
 	ui.SceneWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
 	ui.OutWiget->setWindowTitle("Out Put");
 	//ui.OutWiget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-	ui.PerWiget->setWindowTitle("PerCentage");
+	ui.PerWiget->setWindowTitle("Frame Control");
 	ui.PerWiget->setFeatures(QDockWidget::NoDockWidgetFeatures);
 	ui.dockWidget->setWindowTitle("");
 	ui.dockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
@@ -459,7 +459,7 @@ void QtEdit::importSpine()
 			pausebuttonclick();
 		}
 
-		_DrawRectLayer->updatemySpine(file_name.toStdString(), (fi.path() + "/" + fi.fileName().split(".").at(0)  +".json").toStdString());
+		_DrawRectLayer->updateMySpine(file_name.toStdString(), (fi.path() + "/" + fi.fileName().split(".").at(0)  +".json").toStdString());
 		SpiteS_Model = 2;
 		AddAnimationList(file_name);
 
@@ -586,6 +586,7 @@ void QtEdit::setGLView(QWidget *glWidget)
 	{
 		this->setParent((HWND)glWidget->winId());
  		ui.SceneWidget->setWidget(_glWidget);
+		_glWidget->setFixedHeight(639);
 		//ui.SceneWidget->setTitleBarWidget(_glWidget);
  		setCentralWidget(ui.SceneWidget);
 	}
@@ -718,7 +719,7 @@ void QtEdit::openData()
 	//system("F:\QT\private\QtEdit\Debug.win32\Start.bat");
 	QDir dir;
 	//QString path = dir.currentPath();
-	std::sprintf(myshowstr, "cmd   /c   %s/StartFBXToCocos.bat", dir.currentPath().toStdString().c_str());
+	std::sprintf(myshowstr, "cmd   /c   %s/RunScore/StartFBXToCocos.bat", dir.currentPath().toStdString().c_str());
 	//WinExec("cmd   /c   " +  + "/Start.bat", SW_HIDE);
 	WinExec(myshowstr, SW_HIDE);
 }
@@ -791,7 +792,7 @@ void QtEdit::import()
 			}
 			_end_dt = _end_dt > FPX ? _end_dt : FPX;
 			is_import = true;
-			_DrawRectLayer->updatemydata(file_name.toStdString(), file_name.split(".").at(0).toStdString() + ".png", animation_list.at(0).toStdString());
+			_DrawRectLayer->updateMySprite3D(file_name.toStdString(), file_name.split(".").at(0).toStdString() + ".png", animation_list.at(0).toStdString());
 			ui.dockWidget->setWindowTitle(animation_list.at(0));
 			setSlideEndFPX(_DrawRectLayer->animation->getDuration() * oneFPX * 1);
 			setPerWiget(_DrawRectLayer->animation->getDuration() * oneFPX);

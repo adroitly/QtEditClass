@@ -62,10 +62,10 @@ void DrawRectLayer::DrawInitPosi()
 {
 	PosiDraw = DrawNode::create();
 	Vec2 point1[4];
-	point1[0] = Vec2(_IN_Width - 3, _IN_Height - 3);
-	point1[1] = Vec2(_IN_Width + 3, _IN_Height - 3);
-	point1[2] = Vec2(_IN_Width + 3, _IN_Height + 3);
-	point1[3] = Vec2(_IN_Width - 3, _IN_Height + 3);
+	point1[0] = Vec2(_IN_Width - 2, _IN_Height - 2);
+	point1[1] = Vec2(_IN_Width + 2, _IN_Height - 2);
+	point1[2] = Vec2(_IN_Width + 2, _IN_Height + 2);
+	point1[3] = Vec2(_IN_Width - 2, _IN_Height + 2);
 	PosiDraw->drawPolygon(point1, 4, Color4F(1, 0, 0, 1), 1, Color4F(0, 1, 0, 1));
 	this->addChild(PosiDraw , 100);
 }
@@ -87,7 +87,7 @@ void DrawRectLayer::onTouchMoved(Touch* touch, Event  *event)
 	Endpoint = Vec2((int)touchpoint.x, (int)touchpoint.y);
 	if (std::abs(Endpoint.x - Startpoint.x) >= 15 && std::abs(Endpoint.y - Startpoint.y) >= 15)
 	{
-		_QtEdit->setWindowTitle(_QtEdit->windowTitle().split("*").at(0) + "*");
+		//_QtEdit->setWindowTitle(_QtEdit->windowTitle().split("*").at(0) + "*");
 		this->myupdate();
 	}
 
@@ -98,7 +98,7 @@ void DrawRectLayer::onTouchEnded(Touch *touch, Event *unused_event)
 	Endpoint = Vec2((int)touchpoint.x, (int)touchpoint.y);
 	if (std::abs(Endpoint.x - Startpoint.x) >= 15 && std::abs(Endpoint.y - Startpoint.y) >= 15)
 	{
-		_QtEdit->setWindowTitle(_QtEdit->windowTitle().split("*").at(0) + "*");
+		//_QtEdit->setWindowTitle(_QtEdit->windowTitle().split("*").at(0) + "*");
 		this->myupdate();
 	}
 
@@ -119,7 +119,7 @@ vector<string> DrawRectLayer::getSpineAnimation()
 {
 	return SpineAnimationList;
 }
-void DrawRectLayer::updatemySpine(std::string filename , std::string json_name)
+void DrawRectLayer::updateMySpine(std::string filename , std::string json_name)
 {
 	int i;
 	_MySpine = _MySpine->createWithFile(json_name, filename );
@@ -181,10 +181,12 @@ void DrawRectLayer::setSpritePosition(float with, float height, float sacllx, fl
 }
 
 
-void DrawRectLayer::updatemydata(std::string filename, std::string texture, std::string file_animation)
+void DrawRectLayer::updateMySprite3D(std::string filename, std::string texture, std::string file_animation)
 {
 	mydt = 0.0;
 	sp = Sprite3D::create(filename, texture);
+	Vec3 sprotate(0, 90, 0);
+	sp->setRotation3D(sprotate);
 	//sp->setAnchorPoint(ccp(0.5, 0.5));
 	sp->setCullFaceEnabled(false);
 	this->addChild(sp);
@@ -486,6 +488,10 @@ void DrawRectLayer::myupdate()
 		//injuredNode->drawnode->setAnchorPoint(Vec2((injuredNode->Vertices[0].x + injuredNode->Vertices[2].x), (injuredNode->Vertices[0].y + injuredNode->Vertices[2].y) / 2));
 		//attackNode->drawnode->setAnchorPoint(Vec2((attackNode->Vertices[0].x + attackNode->Vertices[2].x), (attackNode->Vertices[0].y + attackNode->Vertices[2].y) / 2));
 		//bodyNode->drawnode->setAnchorPoint(Vec2((bodyNode->Vertices[0].x + bodyNode->Vertices[2].x), (bodyNode->Vertices[0].y + bodyNode->Vertices[2].y) / 2));
+		if (_QtEdit->is_import)
+		{
+			_QtEdit->setWindowTitle(_QtEdit->windowTitle().split("*").at(0) + "*");
+		}
 		Is_Moveto_Add = true;
 		updataOrInsertFra();
 		Is_Moveto_Add = false;
