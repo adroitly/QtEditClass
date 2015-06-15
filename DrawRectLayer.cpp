@@ -192,11 +192,12 @@ void DrawRectLayer::updateMySprite3D(std::string filename, std::string texture, 
 	this->addChild(sp);
 	animation = Animation3D::getOrCreate(file_animation);
 	if (animation != NULL)
-	{
+	{ 
 		animate = Animate3D::create(animation);
 		animate->is_auto_update = false;
 		_RepeatForever = RepeatForever::create(animate);
-		sp->runAction(_RepeatForever);
+		sp->runAction(_RepeatForever); 
+
 	}
 }
 void DrawRectLayer::actioncallback(Node* pSender)
@@ -224,7 +225,7 @@ void DrawRectLayer::doDraw()
 	if (attackNode->Rotate == 0.0)
 	{
 		if (attackNode != nullptr && attackNode->Vertices != nullptr && attackNode->Vertices[0].x != 0)
-		{
+		{ 
 			attackNode->autorelease();
 			attackNode->retain();
 			if (Is_Moveto_Add && _QtEdit->Ctrl_Is_On)
